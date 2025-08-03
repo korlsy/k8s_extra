@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lsy-linux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-lsy-linux
+  template:
+    metadata:
+      name: linux-container
+      labels:
+        app: my-lsy-linux
+    spec:
+      containers:
+      - name: linux-container
+        image: lsy-linux/appjs
