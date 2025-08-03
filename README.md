@@ -6,4 +6,4 @@ ref : https://uiandwe.tistory.com/1442
 
 # jenkins #
 
-# helm #
+# helm - view #
