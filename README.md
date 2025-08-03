@@ -3,10 +3,14 @@
 ref : https://uiandwe.tistory.com/1442
 
 
-/mnt/d/GitHub_clone/k8s_extra
+
 
 # argoCD #
 
 # jenkins #
 
 # helm - view #
+
+
+/mnt/d/GitHub_clone/k8s_extra
+./auto_push.sh
