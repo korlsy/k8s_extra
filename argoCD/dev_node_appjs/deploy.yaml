@@ -15,5 +15,5 @@ spec:
     spec:
       containers:
       - name: linux-container
-        image: lee-linux/appjs:latest
+        image: example-linux/appjs:latest
         imagePullPolicy: Never
