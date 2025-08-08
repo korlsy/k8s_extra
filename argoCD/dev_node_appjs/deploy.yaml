@@ -16,3 +16,4 @@ spec:
       containers:
       - name: linux-container
         image: lsy-linux/appjs:latest
+        imagePullPolicy: Never
