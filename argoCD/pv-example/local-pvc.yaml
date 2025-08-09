@@ -8,6 +8,6 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: ""
-  volumeName: local-pv
+  storageClassName: a.b.c
+  #volumeName: local-pv
   volumeMode: Filesystem
