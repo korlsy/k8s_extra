@@ -30,7 +30,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pv-test-pod
+  name: loal-pv-test-pod
 spec:
   containers:
     - name: app
