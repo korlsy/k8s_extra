@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/pv1   # minikube VM 내부 경로, 없으면 만들어줘야 함
+  persistentVolumeReclaimPolicy: Retain
