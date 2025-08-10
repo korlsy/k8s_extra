@@ -14,5 +14,9 @@ kubectl exec -it pv-test-pod -- sh -c 'echo hi > /data/hello && cat /data/hello'
 minikube ssh -- 'sudo cat /mnt/data/pv1/hello'
 
 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
+pvc에서 storageClassName 사용하든지, 아니면 volumeName 을 명시적으로 지정하면 해당 pv로 Bound 된다.
+  storageClassName: a.b.c
+  #volumeName: local-pv
+  
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 kubectl exec -it test-pod -- sh
