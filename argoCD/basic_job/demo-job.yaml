@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: simple-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: hello
+        image: busybox:1.36
+        command: ["sh", "-c", "echo 'Hello, Kubernetes Job!' && sleep 5"]
+      restartPolicy: Never
+  backoffLimit: 3        # 실패 시 재시도 횟수 (기본 6)
+  completions: 1         # 총 실행해야 할 파드 개수 (기본 1)
+  parallelism: 1         # 동시에 실행할 파드 개수 (병렬 실행 시 사용)
