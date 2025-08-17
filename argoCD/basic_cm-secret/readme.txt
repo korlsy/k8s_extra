@@ -1,6 +1,7 @@
 
+cd /home/sangyeol/github_clone/k8s_extra
+
 ✅  basic-cm.yaml
-  /home/sangyeol/github_clone/k8s_extra
   👉 kubectl apply -f ./argoCD/basic_cm-secret/basic-cm.yaml
   👉 k describe cm app-config
 				sangyeol@sangyeol:~/github_clone/k8s_extra$ k describe cm app-config
@@ -46,11 +47,16 @@
 ✅  basic-deployment.yaml
   👉 kubectl apply -f ./argoCD/basic_cm-secret/basic-deployment.yaml
 
-kubectl get cm app-config -o yaml
-kubectl get secret app-secret -o yaml   # data는 base64로 보임(정상)
-kubectl get deploy,po
 
-# 컨테이너 안에서 값 확인
-POD=$(kubectl get po -l app=cm-secret-demo -o name)
-kubectl exec -it $POD -- sh -c 'printenv | grep -E "DB_|LOG_LEVEL"'
-kubectl exec -it $POD -- sh -c 'ls -l /etc/config /etc/secret && echo && cat /etc/config/application.properties && echo && cat /etc/secret/credentials.json'
+✅  스키마 검증
+  👉 kubectl apply --dry-run=client -f basic-cm.yaml
+  👉 kubectl apply --dry-run=client -f basic-secret.yaml
+  👉 kubectl apply --dry-run=client -f basic-deployment.yaml
+
+✅  적용
+  👉 kubectl apply -f basic-cm.yaml -f basic-secret.yaml -f basic-deployment.yaml
+
+✅  확인
+  👉 kubectl get po -l app=cm-secret-demo
+  👉 kubectl exec -it deploy/cm-secret-demo -- sh -c 'printenv | grep -E "DB_|LOG_LEVEL"'
+  👉 kubectl exec -it deploy/cm-secret-demo -- sh -lc "cat /etc/config/application.properties && echo && cat /etc/secret/credentials.json"
