@@ -64,7 +64,7 @@ spec:
                 path: application.properties
         - name: sec
           secret:
-            name: app-secret
+            secretName: app-secret
             # 권한 조정이 필요하면 defaultMode 사용 (8진수)
             # defaultMode: 0400
             items:
