@@ -1,0 +1,31 @@
+
+✅  ConfigMap vs Secret, 어디에 쓰나
+  👉 공통점: 둘 다 키-값을 쿠버네티스 오브젝트로 저장. ENV로 주입하거나 파일로 마운트해서 컨테이너가 읽음.
+  👉 차이점
+		ConfigMap: 민감하지 않은 일반 설정(문자열, 파일).
+		Secret: 민감 정보(비밀번호, 토큰). 저장 시 base64로 인코딩되지만 암호화는 아님(중요).
+
+✅  컨테이너에 주입하는 두 길
+
+  ✔ ENV: env, envFrom
+		👉 특정 키만: valueFrom: {secretKeyRef|configMapKeyRef}
+		👉 전부 한꺼번에: envFrom: [{secretRef|configMapRef}]
+
+  ✔ 파일 마운트: volumes.configMap / volumes.secret + volumeMounts
+		👉 파일권한은 secret가 더 보수적(기본 0444). 필요 시 defaultMode 조정.
+
+✅  변경 반영 타이밍
+  ✔ 파일 마운트: ConfigMap/Secret이 바뀌면 볼륨 내용은 수 분 내 자동 갱신(kubelet 동기화). 앱이 파일을 다시 읽어야 효과.
+  ✔ ENV: 컨테이너 시작 시 고정. 재시작해야 반영.
+		Helm/ArgoCD에서는 보통 checksum(해시) 주석을 Deployment에 붙여 값이 바뀌면 자동 롤링되게 합니다.
+
+
+✅  CLI 사용한 빠른 만들기
+kubectl create configmap app-config \
+  --from-literal=LOG_LEVEL=info \
+  --from-file=application.properties=./application.properties
+
+kubectl create secret generic app-secret \
+  --from-literal=DB_USER=admin \
+  --from-literal=DB_PASS=change-me \
+  --from-file=credentials.json=./credentials.json
