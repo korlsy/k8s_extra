@@ -14,7 +14,12 @@ spec:
         app: guestbook-ui
     spec:
       containers:
-      - image: bitnami/nginx
-        name: c-etc-guestbook-ui
-        ports:
-        - containerPort: 80
+        - name: c-etc-guestbook-ui
+          image: bitnami/nginx:latest
+          env:
+            # 명시적으로 8080으로 띄우기(이미 기본이지만 헷갈림 방지)
+            - name: NGINX_HTTP_PORT_NUMBER
+              value: "8080"
+          ports:
+            - name: http
+              containerPort: 8080

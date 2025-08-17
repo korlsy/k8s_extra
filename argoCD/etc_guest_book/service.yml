@@ -3,8 +3,9 @@ kind: Service
 metadata:
   name: guestbook-ui
 spec:
-  ports:
-  - port: 8086
-    targetPort: 80
   selector:
-    app: etc-guestbook-ui-deployment
+    app: guestbook-ui          # ← 라벨 맞춤
+  ports:
+    - name: http
+      port: 8086               # 클러스터IP로 보이는 포트
+      targetPort: 8080         # ← 컨테이너 실제 리슨 포트와 일치
