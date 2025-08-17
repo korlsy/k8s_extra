@@ -1,3 +1,3 @@
 ✅ 
-  👉 sudo apt-get install rig boxes
+  👉 image : smlinux/genid:env
   ✔ sudo apt-get install rig boxes
