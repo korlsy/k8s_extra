@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guestbook-ui-deployment
+  name: etc-guestbook-ui-deployment
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - image: bitnami/nginx
-        name: guestbook-ui
+        name: c-etc-guestbook-ui
         ports:
         - containerPort: 80
