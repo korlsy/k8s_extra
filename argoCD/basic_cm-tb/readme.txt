@@ -10,9 +10,12 @@ kubectl create configmap ttabae-config \
   ✔ A - "genid.yaml" map 항목을 개별적으로 env로 넘김.
   ✔ B - "genid-whole.yaml" map 모든 항목을 env로 넘김.
   	kubectl exec genid-boy -- env
+  		전체가 env로 바인딩 되었는지 확인
+  		
   ✔ C - "genid-volume.yaml" map 항목을 마운트 시킴 (파일로 만듬)
 		kubectl exec -it genid-volume -c web-server -- /bin/bash
 		ls -al /etc/nginx/conf.d/
+		(맵의 설정이 링크된 파일인지 확인)
 		
 		두개의 컨테이는 emptyDir로 하나의 공간을 공유.
 		하나의 컨테이너는 index.html 파일 생산.
