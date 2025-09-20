@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-sql
+data:
+  01_init.sql: |
+    -- 예: 추가 권한/테이블 샘플
+    -- CREATE TABLE appdb.sample(id INT PRIMARY KEY, name VARCHAR(64));

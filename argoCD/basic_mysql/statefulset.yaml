@@ -15,11 +15,14 @@ spec:
         app: mysql
     spec:
       securityContext:
-        fsGroup: 1001
+        fsGroup: 999   # mysql 그룹 ID (이미지 기본값과 호환)
       containers:
         - name: mysql
           image: mysql:8.4
           imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+              name: mysql
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -41,40 +44,39 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: MYSQL_PASSWORD
-            - name: TZ
-              value: "Asia/Seoul"
-          ports:
-            - name: mysql
-              containerPort: 3306
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d
           readinessProbe:
             exec:
-              command: ["bash","-lc","mysqladmin ping -uroot -p$MYSQL_ROOT_PASSWORD"]
-            initialDelaySeconds: 10
+              command: ["bash","-lc","mysqladmin ping -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD"]
+            initialDelaySeconds: 15
             periodSeconds: 5
           livenessProbe:
             exec:
-              command: ["bash","-lc","mysqladmin ping -uroot -p$MYSQL_ROOT_PASSWORD"]
+              command: ["bash","-lc","mysqladmin ping -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD"]
             initialDelaySeconds: 30
             periodSeconds: 10
           resources:
             requests:
-              cpu: "500m"
-              memory: "128Mi"
+              cpu: "100m"
+              memory: "256Mi"
             limits:
-              cpu: "1"
+              cpu: "500m"
               memory: "1Gi"
-      nodeSelector: {}
-      tolerations: []
-      affinity: {}
+      volumes:
+        - name: init-sql
+          configMap:
+            name: mysql-init-sql
   volumeClaimTemplates:
     - metadata:
         name: data
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: standard        # 환경에 맞게
         resources:
           requests:
             storage: 1Gi
+        # Minikube 기본 StorageClass 사용 (필요하면 지정)
+        # storageClassName: standard

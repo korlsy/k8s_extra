@@ -7,8 +7,8 @@ spec:
   type: NodePort
   ports:
     - name: mysql
-      port: 3306         # 클러스터 내부에서 접근할 포트
-      targetPort: 3306   # Pod 컨테이너 포트
-      nodePort: 30306    # 노드에서 접근할 포트 (30000~32767 범위 내 지정)
+      port: 3306
+      targetPort: 3306
+      nodePort: 30306   # Minikube 기본 NodePort 대역(30000-32767) 내에서 선택
   selector:
     app: mysql
