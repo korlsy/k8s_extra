@@ -1,34 +1,31 @@
 
+
 sudo apt install postgresql-client-common
 sudo apt install -y postgresql-client-16
 
 psql "host=127.0.0.1 port=5433 dbname=lsy user=lsy password=lsy"
-
+psql -W -h 127.0.0.1 -p 5433 -U lsy -d lsy
 
 ########################################################################
-포트포워딩이 제일 간단.
-
-
-kubectl -n mysql port-forward svc/mysql 3307:3306
-mysql -h 127.0.0.1 -P 3307 -u lsy -plsy --connect-timeout=5 --protocol=TCP
 
 # 윈도우 테스트.
-# Test-NetConnection -ComputerName localhost -Port 3307
+# Test-NetConnection -ComputerName localhost -Port 5433
 
 
+포트포워딩이 제일 간단.
 ########################################################################
                             [ 포트포워딩 샘플 ]
                             #!/bin/sh
                             
-                            STS=`ps -ef | grep "port-forward" | grep "3307"|wc -l`
+                            STS=`ps -ef | grep "port-forward" | grep "5433"|wc -l`
                             
                             if [ $STS -gt 0 ]; then
-                              echo "already running port-forward 3307:3306"
+                              echo "already running port-forward 5433:5432"
                               exit $?
                             fi
                             
                             /usr/bin/nohup \
-                            kubectl --namespace mysql port-forward svc/mysql 3307:3306 \
+                            kubectl --namespace mysql port-forward svc/mysql 5433:5432 \
                             >/dev/null 2>&1 &
 
 ########################################################################
@@ -44,3 +41,8 @@ minikube ip
 mysql -h 192.168.49.2 -P 30306 -u lsy -p
 
 
+----------------------------------------------------------------------------------------
+        kubectl -n postgresql exec sts/postgresql -- \
+          psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SHOW hba_file;"
+        
+        # 출력 경로가 /etc/postgresql/pg_hba.conf 라면, ConfigMap 쪽을 쓰고 있는 상태

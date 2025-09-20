@@ -20,10 +20,8 @@ spec:
         - name: postgresql
           image: postgres:16
           imagePullPolicy: IfNotPresent
-          # ↓↓↓ 여기 추가: 커스텀 HBA 지정 및 암호 방식 고정
+          # ↓↓↓ 'hba_file' 지정은 제거. 기본 경로(PGDATA/pg_hba.conf)를 사용.
           args:
-            - "-c"
-            - "hba_file=/etc/postgresql/pg_hba.conf"
             - "-c"
             - "password_encryption=scram-sha-256"
           env:
@@ -42,7 +40,7 @@ spec:
                 secretKeyRef:
                   name: postgresql-secret
                   key: POSTGRES_USER
-            # ↓↓↓ 신규 초기화 시 인증 기본값을 scram으로 고정
+            # 선택: 신규 init 시 기본 인증을 scram으로
             - name: POSTGRES_INITDB_ARGS
               value: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
           ports:
@@ -53,9 +51,10 @@ spec:
               mountPath: /var/lib/postgresql/data
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d
-            # ↓↓↓ HBA ConfigMap 마운트
-            - name: etc-postgresql
-              mountPath: /etc/postgresql
+            # ↓↓↓ ConfigMap 단일 파일을 PGDATA/pg_hba.conf에 오버레이
+            - name: hba
+              mountPath: /var/lib/postgresql/data/pg_hba.conf
+              subPath: pg_hba.conf
           readinessProbe:
             exec:
               command: ["bash","-lc","pg_isready -h 127.0.0.1 -p 5432 -U $POSTGRES_USER"]
@@ -73,8 +72,8 @@ spec:
         - name: init-sql
           configMap:
             name: postgresql-init-sql
-        # ↓↓↓ HBA ConfigMap 볼륨
-        - name: etc-postgresql
+        # ↓↓↓ HBA ConfigMap(단일 파일)을 subPath로 사용
+        - name: hba
           configMap:
             name: postgresql-hba
             items:
