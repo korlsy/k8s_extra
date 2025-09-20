@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-init-sql
+data:
+  01_init.sql: |
+    -- 예시: 최초 스키마/권한 추가
+    -- CREATE TABLE public.sample(id INT PRIMARY KEY, name VARCHAR(64));
