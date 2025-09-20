@@ -25,7 +25,7 @@ psql -W -h 127.0.0.1 -p 5433 -U lsy -d lsy
                             fi
                             
                             /usr/bin/nohup \
-                            kubectl --namespace mysql port-forward svc/mysql 5433:5432 \
+                            kubectl --namespace postgresql port-forward svc/postgresql 5433:5432 \
                             >/dev/null 2>&1 &
 
 ########################################################################
