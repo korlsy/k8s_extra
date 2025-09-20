@@ -4,10 +4,11 @@ metadata:
   name: mysql
   namespace: mysql
 spec:
-  clusterIP: None                 # Headless (StatefulSet DNS)
+  type: NodePort
   ports:
     - name: mysql
-      port: 3306
-      targetPort: 3306
+      port: 3306         # 클러스터 내부에서 접근할 포트
+      targetPort: 3306   # Pod 컨테이너 포트
+      nodePort: 30306    # 노드에서 접근할 포트 (30000~32767 범위 내 지정)
   selector:
     app: mysql
