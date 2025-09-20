@@ -15,17 +15,14 @@ spec:
         app: postgresql
     spec:
       securityContext:
-        fsGroup: 999
+        fsGroup: 999        # postgres 사용자/그룹과 호환(공식 이미지)
       containers:
         - name: postgresql
           image: postgres:16
           imagePullPolicy: IfNotPresent
-          # ↓↓↓ 여기 추가: 커스텀 HBA 지정 및 암호 방식 고정
-          args:
-            - "-c"
-            - "hba_file=/etc/postgresql/pg_hba.conf"
-            - "-c"
-            - "password_encryption=scram-sha-256"
+          ports:
+            - containerPort: 5432
+              name: postgresql
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
@@ -42,20 +39,11 @@ spec:
                 secretKeyRef:
                   name: postgresql-secret
                   key: POSTGRES_USER
-            # ↓↓↓ 신규 초기화 시 인증 기본값을 scram으로 고정
-            - name: POSTGRES_INITDB_ARGS
-              value: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
-          ports:
-            - containerPort: 5432
-              name: postgresql
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d
-            # ↓↓↓ HBA ConfigMap 마운트
-            - name: etc-postgresql
-              mountPath: /etc/postgresql
           readinessProbe:
             exec:
               command: ["bash","-lc","pg_isready -h 127.0.0.1 -p 5432 -U $POSTGRES_USER"]
@@ -67,19 +55,16 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
           resources:
-            requests: { cpu: "100m", memory: "256Mi" }
-            limits:   { cpu: "500m", memory: "1Gi" }
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
       volumes:
         - name: init-sql
           configMap:
             name: postgresql-init-sql
-        # ↓↓↓ HBA ConfigMap 볼륨
-        - name: etc-postgresql
-          configMap:
-            name: postgresql-hba
-            items:
-              - key: pg_hba.conf
-                path: pg_hba.conf
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -88,3 +73,4 @@ spec:
         resources:
           requests:
             storage: 1Gi
+        # storageClassName: standard   # 필요 시 명시
